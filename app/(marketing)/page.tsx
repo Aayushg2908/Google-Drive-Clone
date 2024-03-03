@@ -1,17 +1,22 @@
 import Image from "next/image";
-import logo from "@/assets/logo.svg";
-import mainImage from "@/assets/mainpage.jpg";
 import Link from "next/link";
 import { cn } from "@/lib/utils";
 import { buttonVariants } from "@/components/ui/button";
+import { auth } from "@clerk/nextjs";
+import { redirect } from "next/navigation";
 
 const MarketingPage = () => {
+  const { userId } = auth();
+  if (userId) {
+    return redirect("/dashboard");
+  }
+
   return (
     <div className="h-screen">
       <div className="flex p-3 h-[10%]">
         <div className="flex h-fit justify-between w-full">
           <div className="flex justify-center items-center gap-1">
-            <Image src={logo} alt="logo" height={40} width={40} />
+            <Image src="/assets/logo.svg" alt="logo" height={40} width={40} />
             <h2 className="max-sm:hidden text-lg sm:text-xl font-semibold text-slate-800/90 dark:text-white">
               Google
             </h2>
@@ -51,7 +56,9 @@ const MarketingPage = () => {
             </Link>
           </div>
           <Image
-            src={mainImage}
+            src="/assets/mainpage.jpg"
+            width={800}
+            height={800}
             className="h-[500px] w-[500px] 2xl:w-[700px] object-contain "
             alt="main image"
           />
