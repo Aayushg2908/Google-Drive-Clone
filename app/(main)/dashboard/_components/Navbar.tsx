@@ -1,8 +1,10 @@
+import SidebarWrapper from "@/components/SidebarWrapper";
 import { Input } from "@/components/ui/input";
 import { UserButton } from "@clerk/nextjs";
-import { Search } from "lucide-react";
+import { Menu, Search } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
+import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 
 const Navbar = () => {
   return (
@@ -27,14 +29,25 @@ const Navbar = () => {
           placeholder="Search"
         />
       </div>
-      <UserButton
-        appearance={{
-          elements: {
-            avatarBox: "h-[40px] w-[40px]",
-          },
-        }}
-        afterSignOutUrl="/"
-      />
+      <div className="flex items-center gap-x-2">
+        <UserButton
+          appearance={{
+            elements: {
+              avatarBox: "h-[40px] w-[40px]",
+            },
+          }}
+          afterSignOutUrl="/"
+        />
+        <Sheet>
+          <SheetTrigger>
+            <Menu className="text-slate-600/80 lg:hidden" />
+          </SheetTrigger>
+
+          <SheetContent side={"left"}>
+            <SidebarWrapper isMenu={true} />
+          </SheetContent>
+        </Sheet>
+      </div>
     </div>
   );
 };
