@@ -8,8 +8,11 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "./ui/dropdown-menu";
+import { useFolderModal } from "@/hooks/use-folder-modal";
 
 const SidebarActions = () => {
+  const { onOpen } = useFolderModal();
+
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
@@ -25,7 +28,10 @@ const SidebarActions = () => {
         <DropdownMenuItem className="cursor-pointer">
           File Upload
         </DropdownMenuItem>
-        <DropdownMenuItem className="cursor-pointer">
+        <DropdownMenuItem
+          onSelect={() => onOpen("CREATE")}
+          className="cursor-pointer"
+        >
           New Folder
         </DropdownMenuItem>
       </DropdownMenuContent>
