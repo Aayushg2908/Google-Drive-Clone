@@ -5,16 +5,19 @@ type Action = "CREATE" | "UPDATE";
 
 interface FolderModalState {
   type: Action;
-  folder: Folder | null;
+  folderId: string;
+  name: string;
   isOpen: boolean;
-  onOpen: (type: Action, folder?: Folder) => void;
+  onOpen: (type: Action, name?: string, folderId?: string) => void;
   onClose: () => void;
 }
 
 export const useFolderModal = create<FolderModalState>((set) => ({
   type: "CREATE",
-  folder: null,
+  folderId: "",
+  name: "",
   isOpen: false,
-  onOpen: (type, folder) => set(() => ({ type, isOpen: true, folder })),
-  onClose: () => set(() => ({ isOpen: false, folder: null, type: "CREATE" })),
+  onOpen: (type, name, folderId) =>
+    set(() => ({ type, isOpen: true, name, folderId })),
+  onClose: () => set(() => ({ isOpen: false, name: "", type: "CREATE" })),
 }));

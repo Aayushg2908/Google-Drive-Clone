@@ -21,26 +21,34 @@ import {
 } from "@/components/ui/form";
 import { Input } from "./ui/input";
 import { Button } from "./ui/button";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { usePathname } from "next/navigation";
 import { toast } from "sonner";
-import { createFolder } from "@/actions/folder";
+import { createFolder, updateFolder } from "@/actions/folder";
 
 const formSchema = z.object({
   name: z.string().min(1, { message: "Folder name is required" }),
 });
 
 const FolderModal = () => {
-  const { type, isOpen, onClose } = useFolderModal();
+  const { type, folderId, name, isOpen, onClose } = useFolderModal();
   const [isLoading, setIsLoading] = useState(false);
   const pathname = usePathname();
 
   const form = useForm({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      name: "",
+      name: name || "",
     },
   });
+
+  useEffect(() => {
+    if (name) {
+      form.reset({
+        name: name || "",
+      });
+    }
+  }, [name]);
 
   const onSubmit = async (value: { name: string }) => {
     try {
@@ -60,15 +68,20 @@ const FolderModal = () => {
         } else if (data.status === 200) {
           toast.success("Folder created successfully");
         }
-        onClose();
-        form.reset();
       } else {
-        // Edit folder
+        const data = await updateFolder(folderId, value.name);
+        if (data.status === 404) {
+          toast.error("User not found");
+        } else {
+          toast.success("Folder updated successfully");
+        }
       }
     } catch (error) {
       toast.error("Something went wrong");
     } finally {
       setIsLoading(false);
+      onClose();
+      form.reset();
     }
   };
 
