@@ -164,3 +164,37 @@ export const deleteFolder = async (id: string) => {
 
   return { status: 200 };
 };
+
+export const getFolderById = async (id: string) => {
+  const { userId } = auth();
+  if (!userId) {
+    return redirect("/sign-in");
+  }
+
+  const user = await db.user.findUnique({
+    where: {
+      userId,
+    },
+  });
+  if (!user) {
+    return {
+      status: 404,
+      folders: [],
+    };
+  }
+
+  const folders = await db.folder.findMany({
+    where: {
+      userId: user.id,
+      parentId: id,
+    },
+    include: {
+      files: true,
+    },
+  });
+
+  return {
+    status: 200,
+    folders,
+  };
+};
