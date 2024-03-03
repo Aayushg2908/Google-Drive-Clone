@@ -7,16 +7,36 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model Folder {
-  id     String @id @default(uuid())
-  userId String
-  name   String
+model User {
+  id       String @id @default(uuid())
+  userId   String @unique
+  name     String
+  email    String @db.Text
+  imageUrl String @db.Text
+  tier     String @default("FREE")
 
-  files File[]
+  freeTierFiles  Int @default(0)
+  freeTierFolder Int @default(0)
+
+  files  File[]
+  folder Folder[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Folder {
+  id   String @id @default(uuid())
+  name String
+
+  userId String
+  User   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   parentId String?
   parent   Folder?  @relation("FolderToFolder", fields: [parentId], references: [id])
   folders  Folder[] @relation("FolderToFolder")
+
+  files File[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -24,11 +44,13 @@ model Folder {
 
 model File {
   id         String   @id @default(uuid())
-  userId     String
   name       String
   url        String   @db.Text
   inviteCode String   @db.Text
   sharedWith String[] @db.Text
+
+  userId String
+  User   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   folderId String
   folder   Folder @relation(fields: [folderId], references: [id], onDelete: Cascade)
