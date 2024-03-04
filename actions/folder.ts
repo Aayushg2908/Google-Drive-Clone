@@ -179,22 +179,23 @@ export const getFolderById = async (id: string) => {
   if (!user) {
     return {
       status: 404,
-      folders: [],
+      folder: null,
     };
   }
 
-  const folders = await db.folder.findMany({
+  const folder = await db.folder.findUnique({
     where: {
       userId: user.id,
-      parentId: id,
+      id: id,
     },
     include: {
       files: true,
+      folders: true,
     },
   });
 
   return {
     status: 200,
-    folders,
+    folder,
   };
 };

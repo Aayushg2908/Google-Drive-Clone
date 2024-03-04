@@ -2,7 +2,7 @@
 
 import { cn } from "@/lib/utils";
 import { usePathname } from "next/navigation";
-import { Clock4, HardDrive, Star, Users } from "lucide-react";
+import { Clock4, HardDrive, Users } from "lucide-react";
 import Link from "next/link";
 
 const Tabs = () => {
@@ -29,13 +29,6 @@ const Tabs = () => {
       icon: <Clock4 className="w-5 h-5 text-slate-800" />,
       active: pathname === "/dashboard/recents",
       url: "/dashboard/recents",
-    },
-    {
-      id: 4,
-      label: "Stared",
-      icon: <Star className="w-5 h-5 text-slate-800" />,
-      active: pathname === "/dashboard/stared",
-      url: "/dashboard/stared",
     },
   ];
   return (
