@@ -48,7 +48,7 @@ const FolderModal = () => {
         name: name || "",
       });
     }
-  }, [name]);
+  }, [name, form]);
 
   const onSubmit = async (value: { name: string }) => {
     try {

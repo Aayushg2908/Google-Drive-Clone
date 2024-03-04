@@ -31,6 +31,10 @@ const FileModal = () => {
 
               if (data.status === 404) {
                 toast.error("User not found");
+              } else if (data.status === 403) {
+                toast.error(
+                  "You have reached the free tier limit. Upgrade to Premium!"
+                );
               } else if (data.status === 400) {
                 toast.error("Folder not found");
               } else if (data.status === 200) {

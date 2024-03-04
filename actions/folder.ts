@@ -45,16 +45,18 @@ export const createFolder = async (
     });
   }
 
-  await db.user.update({
-    where: {
-      id: user.id,
-    },
-    data: {
-      freeTierFolder: {
-        increment: 1,
+  if (user.tier === "FREE") {
+    await db.user.update({
+      where: {
+        id: user.id,
       },
-    },
-  });
+      data: {
+        freeTierFolder: {
+          increment: 1,
+        },
+      },
+    });
+  }
 
   revalidatePath("/dashboard");
   if (!parentId) {

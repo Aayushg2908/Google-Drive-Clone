@@ -1,5 +1,6 @@
 "use server";
 
+import { FREE_TIER_LIMIT } from "@/constants";
 import { db } from "@/lib/db";
 import { auth } from "@clerk/nextjs";
 import { revalidatePath } from "next/cache";
@@ -29,6 +30,10 @@ export const uploadFile = async ({
     return { status: 404 };
   }
 
+  if (user.tier === "FREE" && user.freeTierFiles >= FREE_TIER_LIMIT) {
+    return { status: 403 };
+  }
+
   const folder = await db.folder.findUnique({
     where: {
       userId: user.id,
@@ -49,16 +54,18 @@ export const uploadFile = async ({
     },
   });
 
-  await db.user.update({
-    where: {
-      id: user.id,
-    },
-    data: {
-      freeTierFiles: {
-        increment: 1,
+  if (user.tier === "FREE") {
+    await db.user.update({
+      where: {
+        id: user.id,
       },
-    },
-  });
+      data: {
+        freeTierFiles: {
+          increment: 1,
+        },
+      },
+    });
+  }
 
   revalidatePath(`/dashboard/folder/${folderId}`);
 
