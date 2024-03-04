@@ -27,7 +27,6 @@ const HomePage = async () => {
             </div>
           ))}
         </div>
-        <h1 className="text-slate-900 text-md font-semibold">Files</h1>
       </div>
     </div>
   );

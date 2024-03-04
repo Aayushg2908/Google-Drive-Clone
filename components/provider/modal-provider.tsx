@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import FolderModal from "../FolderModal";
+import FileModal from "../FileModal";
 
 const ModalProvider = () => {
   const [isMounted, setIsMounted] = useState(false);
@@ -17,6 +18,7 @@ const ModalProvider = () => {
   return (
     <>
       <FolderModal />
+      <FileModal />
     </>
   );
 };

@@ -9,9 +9,24 @@ import {
   DropdownMenuTrigger,
 } from "./ui/dropdown-menu";
 import { useFolderModal } from "@/hooks/use-folder-modal";
+import { usePathname } from "next/navigation";
+import { toast } from "sonner";
+import { useFileModal } from "@/hooks/use-file-modal";
 
 const SidebarActions = () => {
-  const { onOpen } = useFolderModal();
+  const { onOpen: FolderOpen } = useFolderModal();
+  const { onOpen: FileOpen } = useFileModal();
+  const pathname = usePathname();
+
+  const notAllowed = pathname === "/dashboard";
+
+  const handleFileUpload = () => {
+    if (notAllowed) {
+      toast.error("File can only be uploaded inside of a Folder");
+    } else {
+      FileOpen();
+    }
+  };
 
   return (
     <DropdownMenu>
@@ -25,11 +40,14 @@ const SidebarActions = () => {
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent className="space-y-1">
-        <DropdownMenuItem className="cursor-pointer">
+        <DropdownMenuItem
+          onSelect={handleFileUpload}
+          className="cursor-pointer"
+        >
           File Upload
         </DropdownMenuItem>
         <DropdownMenuItem
-          onSelect={() => onOpen("CREATE")}
+          onSelect={() => FolderOpen("CREATE")}
           className="cursor-pointer"
         >
           New Folder

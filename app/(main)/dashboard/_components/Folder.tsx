@@ -31,7 +31,7 @@ const Folder = ({ name, id }: { name: string; id: string }) => {
 
   return (
     <Link
-      href={`dashboard/folder/${id}`}
+      href={`/dashboard/folder/${id}`}
       className="flex hover:bg-[#E1E5EA] bg-[#EDF2FC] items-center justify-between p-2 rounded-md cursor-pointer transition-colors"
     >
       <div className="flex gap-2 justify-center items-center">

@@ -47,7 +47,7 @@ model File {
   name       String
   url        String   @db.Text
   inviteCode String   @db.Text
-  sharedWith String[] @db.Text
+  sharedWith String[] @default([]) @db.Text
 
   userId String
   User   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
