@@ -71,3 +71,51 @@ export const uploadFile = async ({
 
   return { status: 200 };
 };
+
+export const deleteFile = async (fileId: string, folderId: string) => {
+  const { userId } = auth();
+  if (!userId) {
+    return redirect("/sign-in");
+  }
+
+  const user = await db.user.findUnique({
+    where: {
+      userId,
+    },
+  });
+  if (!user) {
+    return { status: 404 };
+  }
+
+  const file = await db.file.findUnique({
+    where: {
+      id: fileId,
+    },
+  });
+  if (!file) {
+    return { status: 403 };
+  }
+
+  await db.file.delete({
+    where: {
+      id: fileId,
+    },
+  });
+
+  if (user.tier === "FREE") {
+    await db.user.update({
+      where: {
+        id: user.id,
+      },
+      data: {
+        freeTierFiles: {
+          decrement: 1,
+        },
+      },
+    });
+  }
+
+  revalidatePath(`/dashboard/folder/${folderId}`);
+
+  return { status: 200 };
+};

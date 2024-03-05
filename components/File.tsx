@@ -18,10 +18,13 @@ import {
 import { Button } from "./ui/button";
 import { useEffect, useState } from "react";
 import Image from "next/image";
+import { toast } from "sonner";
+import { deleteFile } from "@/actions/file";
 
 interface FileProps {
   file: File;
   isOwner: boolean;
+  folderId: string;
 }
 
 const FileIcon = {
@@ -29,14 +32,27 @@ const FileIcon = {
   other: <FileArchive className="h-5 w-5" color="#D93025" strokeWidth={2} />,
 };
 
-const File = ({ file, isOwner }: FileProps) => {
+const File = ({ file, isOwner, folderId }: FileProps) => {
   const [isMounted, setIsMounted] = useState(false);
 
   useEffect(() => {
     setIsMounted(true);
   }, []);
 
-  if (!isMounted) return null;
+  const handleDelete = async () => {
+    try {
+      const data = await deleteFile(file.id, folderId);
+      if (data.status === 404) {
+        toast.error("User not found");
+      } else if (data.status === 403) {
+        toast.error("File not found");
+      } else {
+        toast.success("File deleted successfully");
+      }
+    } catch (error) {
+      toast.error("Failed to delete file");
+    }
+  };
 
   const getPreivew = () => {
     const type = identifyContentType(file.url);
@@ -62,6 +78,8 @@ const File = ({ file, isOwner }: FileProps) => {
     }
   };
 
+  if (!isMounted) return null;
+
   return (
     <div className="max-w-xs mx-auto cursor-pointer hover:bg-[#E1E5EA] bg-[#EDF2FC] rounded-md overflow-hidden shadow-md">
       <div className="p-4 flex justify-start items-center gap-1 relative">
@@ -82,7 +100,10 @@ const File = ({ file, isOwner }: FileProps) => {
                   <Forward className="h-4 w-4 text-slate-600 mr-1" />
                   Share
                 </DropdownMenuItem>
-                <DropdownMenuItem className="cursor-pointer">
+                <DropdownMenuItem
+                  onSelect={handleDelete}
+                  className="cursor-pointer"
+                >
                   <Trash className="h-4 w-4 text-slate-600 mr-1" />
                   Delete
                 </DropdownMenuItem>

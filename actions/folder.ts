@@ -148,16 +148,18 @@ export const deleteFolder = async (id: string) => {
     },
   });
 
-  await db.user.update({
-    where: {
-      id: user.id,
-    },
-    data: {
-      freeTierFolder: {
-        decrement: 1,
+  if (user.tier === "FREE") {
+    await db.user.update({
+      where: {
+        id: user.id,
       },
-    },
-  });
+      data: {
+        freeTierFolder: {
+          decrement: 1,
+        },
+      },
+    });
+  }
 
   revalidatePath("/dashboard");
   if (folder.parentId) {
