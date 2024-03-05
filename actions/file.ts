@@ -119,3 +119,28 @@ export const deleteFile = async (fileId: string, folderId: string) => {
 
   return { status: 200 };
 };
+
+export const getRecentFiles = async () => {
+  const { userId } = auth();
+  if (!userId) {
+    return redirect("/sign-in");
+  }
+
+  const user = await db.user.findUnique({
+    where: {
+      userId,
+    },
+    include: {
+      files: {
+        orderBy: {
+          createdAt: "desc",
+        },
+      },
+    },
+  });
+  if (!user) {
+    return { status: 404, files: [] };
+  }
+
+  return { status: 200, files: user.files };
+};
