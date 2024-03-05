@@ -20,6 +20,7 @@ import { useEffect, useState } from "react";
 import Image from "next/image";
 import { toast } from "sonner";
 import { deleteFile } from "@/actions/file";
+import { useShareModal } from "@/hooks/use-share-modal";
 
 interface FileProps {
   file: File;
@@ -34,6 +35,7 @@ const FileIcon = {
 
 const File = ({ file, isOwner, folderId }: FileProps) => {
   const [isMounted, setIsMounted] = useState(false);
+  const { onOpen } = useShareModal();
 
   useEffect(() => {
     setIsMounted(true);
@@ -96,7 +98,10 @@ const File = ({ file, isOwner, folderId }: FileProps) => {
                 </Button>
               </DropdownMenuTrigger>
               <DropdownMenuContent className="space-y-1">
-                <DropdownMenuItem className="cursor-pointer">
+                <DropdownMenuItem
+                  onSelect={() => onOpen(file)}
+                  className="cursor-pointer"
+                >
                   <Forward className="h-4 w-4 text-slate-600 mr-1" />
                   Share
                 </DropdownMenuItem>

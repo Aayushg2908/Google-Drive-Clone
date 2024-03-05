@@ -144,3 +144,46 @@ export const getRecentFiles = async () => {
 
   return { status: 200, files: user.files };
 };
+
+export const generateNewInviteCode = async (
+  fileId: string,
+  pathname: string
+) => {
+  const { userId } = auth();
+  if (!userId) {
+    return redirect("/sign-in");
+  }
+
+  const user = await db.user.findUnique({
+    where: {
+      userId,
+    },
+  });
+  if (!user) {
+    return { status: 404, code: null };
+  }
+
+  const file = await db.file.findUnique({
+    where: {
+      id: fileId,
+      userId: user.id,
+    },
+  });
+  if (!file) {
+    return { status: 403, code: null };
+  }
+
+  const updatedFile = await db.file.update({
+    where: {
+      id: fileId,
+      userId: user.id,
+    },
+    data: {
+      inviteCode: uuidv4(),
+    },
+  });
+
+  revalidatePath(pathname);
+
+  return { status: 200, code: file.inviteCode };
+};
