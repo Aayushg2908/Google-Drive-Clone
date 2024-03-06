@@ -3,7 +3,6 @@
 import { FREE_TIER_LIMIT } from "@/constants";
 import { db } from "@/lib/db";
 import { auth } from "@clerk/nextjs";
-import { isEmpty, map } from "lodash";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 

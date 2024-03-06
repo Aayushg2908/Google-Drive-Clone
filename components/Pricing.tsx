@@ -5,6 +5,12 @@ import { cn } from "@/lib/utils";
 import { Crown, User } from "lucide-react";
 import { Button } from "./ui/button";
 import { Progress } from "./ui/progress";
+import { loadStripe } from "@stripe/stripe-js";
+import { stripeSession } from "@/actions/stripe";
+import { toast } from "sonner";
+
+const stripKey = process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY || "";
+const asyncStripe = loadStripe(stripKey);
 
 const Pricing = ({
   tier,
@@ -15,6 +21,21 @@ const Pricing = ({
   filesUploaded: number;
   folderCreated: number;
 }) => {
+  const stripeHandler = async () => {
+    try {
+      const stripe = await asyncStripe;
+      if (!stripe) return;
+
+      const sessionId = await stripeSession(2000);
+      const { error } = await stripe.redirectToCheckout({ sessionId });
+      if (error) {
+        toast.error("Error redirecting to checkout");
+      }
+    } catch (error) {
+      toast.error("Error loading stripe");
+    }
+  };
+
   return (
     <div className="flex flex-col p-4 space-y-4">
       <h2
@@ -40,7 +61,9 @@ const Pricing = ({
         </p>
         <div className="w-full">
           <Progress
-            value={(filesUploaded / FREE_TIER_LIMIT) * 100}
+            value={
+              tier !== "FREE" ? 100 : (filesUploaded / FREE_TIER_LIMIT) * 100
+            }
             className="w-full h-2"
           />
         </div>
@@ -53,13 +76,16 @@ const Pricing = ({
         </p>
         <div className="w-full">
           <Progress
-            value={(folderCreated / FREE_TIER_LIMIT) * 100}
+            value={
+              tier !== "FREE" ? 100 : (folderCreated / FREE_TIER_LIMIT) * 100
+            }
             className="w-full h-2"
           />
         </div>
       </div>
       {tier == "FREE" && (
         <Button
+          onClick={stripeHandler}
           className="hover:bg-blue-500 gap-2 hover:text-white focus:outline-none focus:ring focus:border-blue-300 transition duration-300 ease-in-out transform hover:scale-105 bg-gradient-to-r from-indigo-500 to-purple-600 text-white rounded-md py-2 px-4"
           variant={"outline"}
         >
