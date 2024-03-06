@@ -187,3 +187,66 @@ export const generateNewInviteCode = async (
 
   return { status: 200, code: updatedFile.inviteCode };
 };
+
+export const handleShare = async (inviteCode: string) => {
+  if (!inviteCode) return redirect("/dashboard");
+
+  const { userId } = auth();
+  if (!userId) return redirect("/sign-in");
+
+  const user = await db.user.findUnique({
+    where: {
+      userId,
+    },
+  });
+  if (!user) return null;
+
+  const fileExists = await db.file.findFirst({
+    where: { inviteCode },
+  });
+  if (!fileExists) return redirect("/dashboard");
+
+  const userExists = fileExists.sharedWith.includes(user.id);
+  const userIsOwner = fileExists.userId === user.id;
+  if (userExists && userIsOwner) return redirect("/dashboard/shared");
+
+  const file = await db.file.update({
+    where: {
+      id: fileExists.id,
+    },
+    data: {
+      sharedWith: {
+        push: user.id,
+      },
+    },
+  });
+  if (file) {
+    return redirect("/dashboard/shared");
+  }
+};
+
+export const getSharedFiles = async () => {
+  const { userId } = auth();
+  if (!userId) {
+    return redirect("/sign-in");
+  }
+
+  const user = await db.user.findUnique({
+    where: {
+      userId,
+    },
+  });
+  if (!user) {
+    return { status: 404, files: [] };
+  }
+
+  const files = await db.file.findMany({
+    where: {
+      sharedWith: {
+        has: user.id,
+      },
+    },
+  });
+
+  return { status: 200, files };
+};

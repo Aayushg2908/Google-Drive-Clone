@@ -25,7 +25,6 @@ import { useShareModal } from "@/hooks/use-share-modal";
 interface FileProps {
   file: File;
   isOwner: boolean;
-  folderId: string;
 }
 
 const FileIcon = {
@@ -33,7 +32,7 @@ const FileIcon = {
   other: <FileArchive className="h-5 w-5" color="#D93025" strokeWidth={2} />,
 };
 
-const File = ({ file, isOwner, folderId }: FileProps) => {
+const File = ({ file, isOwner }: FileProps) => {
   const [isMounted, setIsMounted] = useState(false);
   const { onOpen } = useShareModal();
 
@@ -43,7 +42,7 @@ const File = ({ file, isOwner, folderId }: FileProps) => {
 
   const handleDelete = async () => {
     try {
-      const data = await deleteFile(file.id, folderId);
+      const data = await deleteFile(file.id, file.folderId);
       if (data.status === 404) {
         toast.error("User not found");
       } else if (data.status === 403) {
