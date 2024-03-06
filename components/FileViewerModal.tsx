@@ -37,13 +37,40 @@ const FileViewerModal = () => {
     }
   };
 
+  const downloadFile = async () => {
+    try {
+      const res = await fetch(file.url);
+      if (!res.ok) {
+        throw new Error("Failed to download file");
+      }
+
+      const blob = await res.blob();
+      const blobUrl = window.URL.createObjectURL(blob);
+
+      const anchor = document.createElement("a");
+      anchor.style.display = "none";
+
+      anchor.download = file.name;
+      anchor.href = blobUrl;
+
+      document.body.appendChild(anchor);
+
+      anchor.click();
+
+      document.body.removeChild(anchor);
+      window.URL.revokeObjectURL(blobUrl);
+    } catch (error) {
+      toast.error("Failed to download file");
+    }
+  };
+
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent className="bg-white text-black p-0 overflow-hidden !gap-0">
         <div className="w-full">{getPreview()}</div>
         <DialogFooter className="bg-gray-100 px-6 py-6">
           <div className="flex items-center justify-end w-full">
-            <Button>Download</Button>
+            <Button onClick={downloadFile}>Download</Button>
           </div>
         </DialogFooter>
       </DialogContent>

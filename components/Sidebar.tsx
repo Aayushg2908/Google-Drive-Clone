@@ -23,7 +23,7 @@ const Sidebar = async () => {
 
   return (
     <>
-      <SidebarActions />
+      <SidebarActions filesUploaded={user.freeTierFiles} />
       <Tabs />
       <Separator className="mt-4" />
       <Pricing
