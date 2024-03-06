@@ -3,6 +3,7 @@
 import { FREE_TIER_LIMIT } from "@/constants";
 import { db } from "@/lib/db";
 import { auth } from "@clerk/nextjs";
+import { isEmpty, map } from "lodash";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 
@@ -202,4 +203,54 @@ export const getFolderById = async (id: string) => {
     status: 200,
     folder,
   };
+};
+
+export const getParentFolders = async (
+  folderId: string,
+  parentFolders: any
+) => {
+  const folder = await db.folder.findUnique({
+    where: {
+      id: folderId,
+    },
+  });
+  if (!folder) {
+    return null;
+  }
+
+  parentFolders.push({ name: folder.name, id: folder.id });
+
+  if (!folder.parentId) {
+    parentFolders.push({ name: "My Drive", id: null });
+    return;
+  }
+
+  await getParentFolders(folder.parentId, parentFolders);
+};
+
+export const getBreadcrumb = async (folderId: string) => {
+  const { userId } = auth();
+  if (!userId) {
+    return redirect("/sign-in");
+  }
+
+  const user = await db.user.findUnique({
+    where: {
+      userId,
+    },
+  });
+  if (!user) {
+    return {
+      status: 404,
+      breadcrumb: [],
+    };
+  }
+
+  const parentFolders: any = [];
+  await getParentFolders(folderId, parentFolders);
+
+  const valuableData = parentFolders.reverse();
+  valuableData.pop();
+
+  return valuableData;
 };
