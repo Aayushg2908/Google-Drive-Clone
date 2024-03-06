@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import FolderModal from "../FolderModal";
 import FileModal from "../FileModal";
 import ShareModal from "../ShareModal";
+import FileViewerModal from "../FileViewerModal";
 
 const ModalProvider = () => {
   const [isMounted, setIsMounted] = useState(false);
@@ -21,6 +22,7 @@ const ModalProvider = () => {
       <FolderModal />
       <FileModal />
       <ShareModal />
+      <FileViewerModal />
     </>
   );
 };

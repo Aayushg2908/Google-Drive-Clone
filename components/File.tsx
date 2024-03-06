@@ -21,6 +21,7 @@ import Image from "next/image";
 import { toast } from "sonner";
 import { deleteFile } from "@/actions/file";
 import { useShareModal } from "@/hooks/use-share-modal";
+import { useFileViewerModal } from "@/hooks/use-fileviewer-modal";
 
 interface FileProps {
   file: File;
@@ -35,6 +36,7 @@ const FileIcon = {
 const File = ({ file, isOwner }: FileProps) => {
   const [isMounted, setIsMounted] = useState(false);
   const { onOpen } = useShareModal();
+  const { onOpen: fileViewer } = useFileViewerModal();
 
   useEffect(() => {
     setIsMounted(true);
@@ -55,7 +57,7 @@ const File = ({ file, isOwner }: FileProps) => {
     }
   };
 
-  const getPreivew = () => {
+  const getPreview = () => {
     const type = identifyContentType(file.url);
 
     if (type == "image") {
@@ -116,7 +118,9 @@ const File = ({ file, isOwner }: FileProps) => {
           </div>
         )}
       </div>
-      <div className="w-full h-[200px] p-1">{getPreivew()}</div>
+      <div className="w-full h-[200px] p-1" onClick={() => fileViewer(file)}>
+        {getPreview()}
+      </div>
     </div>
   );
 };
