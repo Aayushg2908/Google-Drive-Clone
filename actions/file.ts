@@ -185,5 +185,5 @@ export const generateNewInviteCode = async (
 
   revalidatePath(pathname);
 
-  return { status: 200, code: file.inviteCode };
+  return { status: 200, code: updatedFile.inviteCode };
 };
