@@ -19,7 +19,9 @@ const ShareModal = () => {
   const pathname = usePathname();
 
   useEffect(() => {
-    setInviteUrl(`http://localhost:3000/file/share/${file?.inviteCode}`);
+    setInviteUrl(
+      `https://google-drive-clone-sable.vercel.app/file/share/${file?.inviteCode}`
+    );
   }, [file?.inviteCode]);
 
   const onCopy = () => {
@@ -42,7 +44,9 @@ const ShareModal = () => {
         toast.error("File not found");
       } else if (data.status === 200) {
         toast.success("New link generated");
-        setInviteUrl(`http://localhost:3000/file/share/${data.code}`);
+        setInviteUrl(
+          `https://google-drive-clone-sable.vercel.app/file/share/${data.code}`
+        );
       }
     } catch (error) {
       toast.error("Failed to generate a new link");
