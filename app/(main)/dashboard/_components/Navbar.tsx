@@ -1,10 +1,10 @@
 import SidebarWrapper from "@/components/SidebarWrapper";
-import { Input } from "@/components/ui/input";
 import { UserButton } from "@clerk/nextjs";
-import { Menu, Search } from "lucide-react";
+import { Menu } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
+import Search from "./Search";
 
 const Navbar = () => {
   return (
@@ -21,14 +21,7 @@ const Navbar = () => {
           Drive
         </h1>
       </Link>
-      <div className="relative w-[60%] sm:w-[50%] lg:w-[40%]">
-        <Search className="h-5 w-5 absolute top-[0.65rem] left-3 text-slate-500" />
-        <Input
-          className="bg-[#EDF2FC] rounded-3xl pl-10 border-none border-0 focus-visible:ring-0 focus-visible:ring-offset-0"
-          type="text"
-          placeholder="Search"
-        />
-      </div>
+      <Search />
       <div className="flex items-center gap-x-2">
         <UserButton
           appearance={{

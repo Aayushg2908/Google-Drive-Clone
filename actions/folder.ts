@@ -253,3 +253,47 @@ export const getBreadcrumb = async (folderId: string) => {
 
   return valuableData;
 };
+
+export const getData = async (query: string) => {
+  const { userId } = auth();
+  if (!userId) {
+    return redirect("/sign-in");
+  }
+
+  const user = await db.user.findUnique({
+    where: {
+      userId,
+    },
+  });
+  if (!user) {
+    return {
+      status: 404,
+      folders: [],
+      files: [],
+    };
+  }
+
+  const folders = await db.folder.findMany({
+    where: {
+      userId: user.id,
+      name: {
+        contains: query,
+      },
+    },
+  });
+
+  const files = await db.file.findMany({
+    where: {
+      userId: user.id,
+      name: {
+        contains: query,
+      },
+    },
+  });
+
+  return {
+    status: 200,
+    folders,
+    files,
+  };
+};
