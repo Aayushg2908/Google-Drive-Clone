@@ -278,6 +278,7 @@ export const getData = async (query: string) => {
       userId: user.id,
       name: {
         contains: query,
+        mode: "insensitive",
       },
     },
   });
