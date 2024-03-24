@@ -5,7 +5,7 @@ import { Toaster } from "sonner";
 
 const MainLayout = ({ children }: { children: React.ReactNode }) => {
   return (
-    <div className="h-screen overflow-hidden">
+    <div className="h-screen">
       <Navbar />
       <div className="w-full h-full flex">
         <SidebarWrapper isMenu={false} />
