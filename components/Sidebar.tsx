@@ -18,7 +18,7 @@ const Sidebar = async () => {
     },
   });
   if (!user) {
-    return null;
+    return redirect("/dashboard");
   }
 
   return (
