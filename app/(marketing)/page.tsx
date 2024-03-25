@@ -18,7 +18,7 @@ const MarketingPage = () => {
           <div className="flex justify-center items-center gap-1">
             <Image src="/assets/logo.svg" alt="logo" height={40} width={40} />
             <h2 className="max-sm:hidden text-lg sm:text-xl font-semibold text-slate-800/90 dark:text-white">
-              Google
+              Store
             </h2>
             <h4 className="max-sm:hidden text-lg sm:text-xl dark:text-white/50">
               Drive
